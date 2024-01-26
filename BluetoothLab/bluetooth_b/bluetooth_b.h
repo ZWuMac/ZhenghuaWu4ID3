@@ -7,13 +7,14 @@
 //IIC Addresses for Temperature Sensor
 #define ADDR (byte)(0x40)
 #define TMP_CMD (byte)(0xF3)
+#define HUM_CMD (byte)(0xF5)
 
 //Sample frequency
 #define DELAY_BETWEEN_SAMPLES_MS 5000
 
 //Device information
-String group_name = "GroupA";
-String device_name = "DeviceA";
+String group_name = "Zhenghua Wu";
+String device_name = "Bluetooth lab";
 
 //Instantiating sensor object and configuration
 AsyncAPDS9306 light_sensor;

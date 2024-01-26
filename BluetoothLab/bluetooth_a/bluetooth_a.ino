@@ -2,8 +2,7 @@
 
 void setup() {
   Serial.begin(9600);
-  Serial.print("\n\n------------------------\n"
-    + group_name + " : " + device_name + "\n------------------------\n\n"); 
+  Serial.print("\n\n------------------------\n  ZhenghuaWu  Lab4ID3  \n------------------------\n\n"); 
 
   Wire.begin();
   Wire.beginTransmission(ADDR);
@@ -18,27 +17,42 @@ void loop() {
   Wire.beginTransmission(ADDR);
   Wire.write(TMP_CMD);
   Wire.endTransmission();
-  delay(100);
+  delay(200);
 
   Wire.requestFrom(ADDR, 2);
 
-  char data[2];
+  char dataT[2];
   if(Wire.available() == 2){
-    data[0] = Wire.read();
-    data[1] = Wire.read();
+    dataT[0] = Wire.read();
+    dataT[1] = Wire.read();
   }
 
-  float temp = ((data[0] * 256.0) + data[1]);
+  float temp = ((dataT[0] * 256.0) + dataT[1]);
   float temp_c = ((175.72 * temp) / 65536.0) - 46.85;
+
+  Wire.beginTransmission(ADDR);
+  Wire.write(HUM_CMD);
+  Wire.endTransmission();
+  delay(200);
+
+  Wire.requestFrom(ADDR, 2);
+
+  char dataH[2];
+  if(Wire.available() == 2){
+    dataH[0] = Wire.read();
+    dataH[1] = Wire.read();
+  }
+
+  float humd = ((dataH[0] * 256.0) + dataH[1]);
+  humd = ((125.0 * humd) / 65536.0) - 6;
 
   AsyncAPDS9306Data light_data = light_sensor.syncLuminosityMeasurement();
   float lux = light_data.calculateLux();
 
-  String formatted_data = 
-    "{ \"" + group_name + "\": { \"" 
-    + device_name + "\": { \"Temp\": \"" 
-    + String(temp_c) + "\", \"Luminosity\": \"" 
-    + String(lux) + "\" } } }" + '\n';
+  String formatted_data = group_name + ", " 
+  + device_name + ": " + "Temperature(degC): " 
+  + temp_c + "; %Humidity: " + humd 
+  + "; Brightness(lux): " + lux + "\n";
       
   Serial.println(formatted_data);
   
